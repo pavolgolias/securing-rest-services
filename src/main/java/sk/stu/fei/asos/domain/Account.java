@@ -1,4 +1,4 @@
-package sk.stu.fei.asos;
+package sk.stu.fei.asos.domain;
 
 public class Account {
     private Long id;
@@ -6,16 +6,18 @@ public class Account {
     private String lastName;
     private String username;
     private String password;
+    private AccountRole role;
 
     public Account() {
     }
 
-    public Account(Long id, String firstName, String lastName, String username, String password) {
+    public Account(Long id, String firstName, String lastName, String username, String password, AccountRole role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public Long getId() {
@@ -56,6 +58,14 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public AccountRole getRole() {
+        return role;
+    }
+
+    public void setRole(AccountRole role) {
+        this.role = role;
     }
 
     @Override

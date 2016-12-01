@@ -1,4 +1,4 @@
-package sk.stu.fei.asos;
+package sk.stu.fei.asos.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +98,12 @@ public class ExceptionHandlerController {
 
         private void setPath(String path) {
             this.path = path;
+        }
+    }
+
+    public static class NotFound extends RuntimeException {
+        public NotFound(String message) {
+            super(message);
         }
     }
 }
