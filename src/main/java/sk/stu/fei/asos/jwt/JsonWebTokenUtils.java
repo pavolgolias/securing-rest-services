@@ -62,7 +62,7 @@ public class JsonWebTokenUtils {
         Claims claims;
         try {
             claims = Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(Base64.getEncoder().encodeToString(secret.getBytes()))
                     .parseClaimsJws(token)
                     .getBody();
         }

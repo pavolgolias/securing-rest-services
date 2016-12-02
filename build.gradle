@@ -30,6 +30,7 @@ dependencies {
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.4.2.RELEASE'
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '1.4.2.RELEASE'
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.2.RELEASE'
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging', version: '1.4.2.RELEASE'
 
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
 
