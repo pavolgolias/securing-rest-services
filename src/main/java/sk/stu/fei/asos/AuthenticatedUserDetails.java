@@ -1,4 +1,4 @@
-package sk.stu.fei.asos.jwt;
+package sk.stu.fei.asos;
 
 
 import org.springframework.security.core.GrantedAuthority;

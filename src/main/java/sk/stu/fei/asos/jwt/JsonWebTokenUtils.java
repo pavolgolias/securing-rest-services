@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import sk.stu.fei.asos.AuthenticatedUserDetails;
 import sk.stu.fei.asos.domain.Account;
 
 import java.util.Base64;

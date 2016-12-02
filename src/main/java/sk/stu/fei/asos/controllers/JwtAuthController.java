@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import sk.stu.fei.asos.domain.Account;
 import sk.stu.fei.asos.domain.AccountRole;
 import sk.stu.fei.asos.domain.InMemoryAccountDao;
-import sk.stu.fei.asos.jwt.AuthenticatedUserDetails;
+import sk.stu.fei.asos.AuthenticatedUserDetails;
 import sk.stu.fei.asos.jwt.JsonWebTokenUtils;
 
 @RestController

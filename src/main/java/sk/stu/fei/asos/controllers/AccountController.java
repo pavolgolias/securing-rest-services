@@ -20,20 +20,20 @@ public class AccountController {
         this.dao = dao;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("#oauth2.hasScope('create') and hasAnyRole('ADMIN', 'PRIVILEGEDUSER')")
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Account createAccount(@RequestBody Account account) {
         return dao.persist(account);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PRIVILEGEDUSER', 'USER')")
+    @PreAuthorize("#oauth2.hasScope('read') and hasAnyRole('ADMIN', 'PRIVILEGEDUSER', 'USER')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Account getAccount(@PathVariable Long id) {
         return dao.findById(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('update') and hasAnyRole('ADMIN', 'PRIVILEGEDUSER')")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Account updateAccount(@PathVariable Long id, @RequestBody Account account) {
         Account storedAccount = dao.findById(id);
@@ -44,7 +44,7 @@ public class AccountController {
         return dao.persist(storedAccount);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('create') and hasRole('ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccount(@PathVariable Long id) {
@@ -52,8 +52,8 @@ public class AccountController {
         dao.delete(account);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PRIVILEGEDUSER')")
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("#oauth2.hasScope('read') and hasAnyRole('ADMIN', 'PRIVILEGEDUSER', 'USER')")
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Account> getAllAccounts() {
         return dao.findAll();
     }

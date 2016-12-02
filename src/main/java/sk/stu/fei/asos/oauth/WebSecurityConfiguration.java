@@ -1,9 +1,8 @@
-package sk.stu.fei.asos.jwt;
+package sk.stu.fei.asos.oauth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -11,23 +10,27 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import sk.stu.fei.asos.AuthenticatedUserDetailsService;
 import sk.stu.fei.asos.EntryPointUnauthorizedHandler;
 
-//@Configuration
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final EntryPointUnauthorizedHandler unauthorizedHandler;
     private final AuthenticatedUserDetailsService userDetailsService;
-    private final JsonWebTokenUtils tokenUtils;
+//    private final RestSavedRequestAwareAuthenticationSuccessHandler restSavedRequestAwareAuthenticationSuccessHandler;
 
     @Autowired
-    public WebSecurityConfiguration(EntryPointUnauthorizedHandler unauthorizedHandler, AuthenticatedUserDetailsService userDetailsService, JsonWebTokenUtils tokenUtils) {
+    public WebSecurityConfiguration(EntryPointUnauthorizedHandler unauthorizedHandler, AuthenticatedUserDetailsService userDetailsService, RestSavedRequestAwareAuthenticationSuccessHandler restSavedRequestAwareAuthenticationSuccessHandler) {
         this.unauthorizedHandler = unauthorizedHandler;
         this.userDetailsService = userDetailsService;
-        this.tokenUtils = tokenUtils;
+//        this.restSavedRequestAwareAuthenticationSuccessHandler = restSavedRequestAwareAuthenticationSuccessHandler;
     }
 
     @Autowired
@@ -42,35 +45,35 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter(tokenUtils, userDetailsService);
-        authenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
-        return authenticationTokenFilter;
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http
-            .exceptionHandling()
-                .authenticationEntryPoint(this.unauthorizedHandler)
-                .and()
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+            .exceptionHandling()
+                .authenticationEntryPoint(unauthorizedHandler)
+                .and()
             .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/jwt/auth").permitAll()
-                .antMatchers("/**").authenticated()
-                .anyRequest().permitAll()
+                .antMatchers("/oauth/authorize").authenticated()
                 .and()
+            .csrf().disable()
             .formLogin()
-                .failureHandler((request,response,exception)-> response.setStatus(401))
-                .and()
-            .csrf()
-                .disable()
-                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+                .usernameParameter("username")
+                .passwordParameter("password")
+//                .successHandler(restSavedRequestAwareAuthenticationSuccessHandler)
+                .failureHandler(new SimpleUrlAuthenticationFailureHandler());
         // @formatter:on
+    }
+
+    @Bean
+    public TokenStore tokenStore() {
+        return new InMemoryTokenStore();
+    }
+
+    @Bean
+    public AuthorizationCodeServices authorizationCodeServices() {
+        return new InMemoryAuthorizationCodeServices();
     }
 }
