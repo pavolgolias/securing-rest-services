@@ -24,13 +24,11 @@ import sk.stu.fei.asos.EntryPointUnauthorizedHandler;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final EntryPointUnauthorizedHandler unauthorizedHandler;
     private final AuthenticatedUserDetailsService userDetailsService;
-//    private final RestSavedRequestAwareAuthenticationSuccessHandler restSavedRequestAwareAuthenticationSuccessHandler;
 
     @Autowired
-    public WebSecurityConfiguration(EntryPointUnauthorizedHandler unauthorizedHandler, AuthenticatedUserDetailsService userDetailsService, RestSavedRequestAwareAuthenticationSuccessHandler restSavedRequestAwareAuthenticationSuccessHandler) {
+    public WebSecurityConfiguration(EntryPointUnauthorizedHandler unauthorizedHandler, AuthenticatedUserDetailsService userDetailsService) {
         this.unauthorizedHandler = unauthorizedHandler;
         this.userDetailsService = userDetailsService;
-//        this.restSavedRequestAwareAuthenticationSuccessHandler = restSavedRequestAwareAuthenticationSuccessHandler;
     }
 
     @Autowired
@@ -62,7 +60,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .formLogin()
                 .usernameParameter("username")
                 .passwordParameter("password")
-//                .successHandler(restSavedRequestAwareAuthenticationSuccessHandler)
                 .failureHandler(new SimpleUrlAuthenticationFailureHandler());
         // @formatter:on
     }
